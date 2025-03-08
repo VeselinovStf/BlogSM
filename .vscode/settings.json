@@ -3,7 +3,8 @@
 
         "$shared": {},
         "dev": {
-            "host": "http://localhost:5152/api/v1"
+            "host": "http://localhost:5152/api/v1",
+            "blogPostId": "72635026-ae32-462c-9b47-07295b91227e"
         }
     }
 }
