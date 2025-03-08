@@ -1,0 +1,6 @@
+POST {{host}}/blogpost
+Content-Type: application/json
+
+{
+    
+}
