@@ -2,5 +2,16 @@ POST {{host}}/blogpost
 Content-Type: application/json
 
 {
-    
+  "Layout": "post",
+  "Title": "Mastering the Art of Cinematic FX",
+  "Date": "2025-02-04T06:00:00+03:00",
+  "Preview": "blog_post_2025_02_4_preview.webp",
+  "Image": "blog_post_2025_02_4.webp",
+  "Alt": "Mastering the Art of Cinematic FX",
+  "Categories": ["music", "fm", "filters", "envelopes", "tutorial", "synthesis"],
+  "Author": "ToneSharp",
+  "Short": "Mastering the Art of Cinematic FX - Impacts, Sweeps, Atmospheres & Soundscapes",
+  "Tags": ["music production", "royalty-free music", "jfree", "community", "Tone Sharp", "course", "synthesis", "fm"],
+  "ViewTitle": true,
+  "Content": "In the world of music production, film scoring, and game sound design, sound effects play a crucial role in shaping the listener’s experience..."
 }

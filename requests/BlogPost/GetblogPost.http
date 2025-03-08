@@ -1,2 +1,2 @@
-GET {{host}}/blogpost
+GET {{host}}/blogpost/{{blogPostId}}
 Accept: application/json
