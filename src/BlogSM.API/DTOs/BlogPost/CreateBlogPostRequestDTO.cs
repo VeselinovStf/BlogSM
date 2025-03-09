@@ -5,7 +5,7 @@ namespace BlogSM.API.DTOs.BlogPost;
 public class CreateBlogPostRequestDTO
 {
     [Required]
-    public string Layout { get; set; }
+    public Guid LayoutId { get; set; }  // Match entity
 
     [Required]
     public string Title { get; set; }
@@ -25,26 +25,29 @@ public class CreateBlogPostRequestDTO
     public string? Alt { get; set; }
 
     [Required]
-    public List<string> Categories { get; set; }
+    public List<Guid> CategoryIds { get; set; }  // Match entity
 
     [Required]
-    public string Author { get; set; }
+    public Guid AuthorId { get; set; }  // Match entity
 
     [Required]
     public string Short { get; set; }
 
     [Required]
-    public List<string> Tags { get; set; }
+    public List<Guid> TagIds { get; set; }  // Match entity
 
-    public List<string>? LinkedPacks { get; set; }
-    public List<string>? DemoPacks { get; set; }
+    public List<Guid>? LinkedPackIds { get; set; }  // Match entity
+    public List<Guid>? DemoPackIds { get; set; }  // Match entity
 
     [Required]
     public bool ViewTitle { get; set; }
     public string? TopBanner { get; set; }
     public int Discount { get; set; }
-    public string? PostTarget { get; set; }
-    public string? PageType { get; set; }
+
+    [Required]
+    public Guid PostTargetId { get; set; }  // Match entity
+    [Required]
+    public Guid PageTypeId { get; set; }  // Match entity
 
     [Required]
     public string Content { get; set; }
