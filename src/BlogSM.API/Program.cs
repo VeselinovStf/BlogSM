@@ -18,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
           options.GroupNameFormat = "'v'VVV";
           options.SubstituteApiVersionInUrl = true;
       });
+
+    builder.Services.AddAutoMapper(typeof(Program).Assembly);
 }
 
 
