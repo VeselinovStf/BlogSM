@@ -26,9 +26,9 @@ public class BlogPost : Entity
     public Author Author { get; set; }
     public Guid LayoutId { get; set; }
     public Layout Layout { get; set; }
-    public List<Tag> Tags { get; set; }
-    public List<Pack> LinkedPacks { get; set; }
-    public List<Pack> DemoPacks { get; set; }
-    public List<Category> Categories { get; set; }
+    public ICollection<Tag> Tags { get; set; }
+    public ICollection<Pack> LinkedPacks { get; set; }
+    public ICollection<Pack> DemoPacks { get; set; }
+    public ICollection<Category> Categories { get; set; }
 
 }
