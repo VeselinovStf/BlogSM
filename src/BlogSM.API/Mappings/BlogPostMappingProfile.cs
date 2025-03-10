@@ -23,6 +23,7 @@ public class BlogPostMappingProfile : Profile
 
         // Entity → DTO (Response)
         CreateMap<BlogPost, BlogPostResponseDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Layout, opt => opt.MapFrom(src => src.LayoutId.ToString()))
             .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.AuthorId.ToString()))
             .ForMember(dest => dest.PostTarget, opt => opt.MapFrom(src =>  src.PostTargetId.ToString()))

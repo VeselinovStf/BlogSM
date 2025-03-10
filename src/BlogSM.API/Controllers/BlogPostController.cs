@@ -4,6 +4,7 @@ using AutoMapper;
 
 using BlogSM.API.Domain;
 using BlogSM.API.DTOs.BlogPost;
+using BlogSM.API.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,16 +14,23 @@ namespace BlogSM.API.Controllers
     [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class BlogPostController(IMapper mapper) : ControllerBase
+    public class BlogPostController(IMapper mapper, BlogPostService blogPostService) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
+        private readonly BlogPostService _blogPostService = blogPostService;
 
         [HttpGet("{blogPostId:guid}")]
-        public IActionResult Get(Guid blogPostId){
+        public IActionResult Get(Guid blogPostId)
+        {
+            // USECASE - GET PRODUCT
+            var blogPost = _blogPostService.Get(blogPostId);
 
-            // get 
+            // MAP TO EXTERNAL REPRESENTATION
+            var blogPostResponseModel = _mapper.Map<BlogPostResponseDTO>(blogPost);
 
-            return Ok(new { Message = "Working..."});
+            return blogPostResponseModel is null 
+                ? Problem(statusCode: StatusCodes.Status404NotFound, detail: $"Blog Post with id: {blogPostId} is not found") 
+                : Ok(blogPostResponseModel);
         }
 
         [HttpPost]
@@ -32,7 +40,8 @@ namespace BlogSM.API.Controllers
             // MAP TO INTERNAL REPRESENTATION
             var newBlogPost = _mapper.Map<BlogPost>(createBlogPostRequest);
 
-            // CREATE PRODUCT
+            // USECASE - CREATE PRODUCT
+            _blogPostService.Create(newBlogPost);
 
             // MAP TO EXTERNAL REPRESENTATION
             var createdBlogPostResponseModel = _mapper.Map<BlogPostResponseDTO>(newBlogPost);

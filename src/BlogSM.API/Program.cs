@@ -1,5 +1,7 @@
 using Asp.Versioning;
 
+using BlogSM.API.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddControllers();
@@ -20,6 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
       });
 
     builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+    builder.Services.AddScoped< BlogPostService>();
 }
 
 
