@@ -1,6 +1,9 @@
 using Asp.Versioning;
 
+using BlogSM.API.Persistence;
 using BlogSM.API.Services;
+
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -23,7 +26,10 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-    builder.Services.AddScoped< BlogPostService>();
+    builder.Services.AddScoped<BlogPostService>();
+
+    builder.Services.AddDbContext<BlogSMDbContext>(options => 
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
 
