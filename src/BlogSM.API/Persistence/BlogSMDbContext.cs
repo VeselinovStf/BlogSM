@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 using BlogSM.API.Domain;
 
@@ -20,5 +21,12 @@ public class BlogSMDbContext : DbContext
     public BlogSMDbContext(DbContextOptions<BlogSMDbContext> options) : base(options)
     {
         
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder){
+        
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        base.OnModelCreating(modelBuilder);
     }
 }

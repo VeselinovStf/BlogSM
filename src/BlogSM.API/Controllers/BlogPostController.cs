@@ -7,6 +7,8 @@ using BlogSM.API.DTOs.BlogPost;
 using BlogSM.API.Services;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BlogSM.API.Controllers
 {
@@ -36,7 +38,6 @@ namespace BlogSM.API.Controllers
         [HttpPost]
         public IActionResult Create(CreateBlogPostRequestDTO createBlogPostRequest)
         {
-
             // MAP TO INTERNAL REPRESENTATION
             var newBlogPost = _mapper.Map<BlogPost>(createBlogPostRequest);
 

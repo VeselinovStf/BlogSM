@@ -2,32 +2,27 @@ POST {{host}}/blogpost
 Content-Type: application/json
 
 {
-  "LayoutId": "b2a19d3e-3c5b-4d8b-9a7e-3f8b6e1c9d5a",
+  "URLTitle": "mastering-art-of-cinematic-fx",
+  "LayoutId": "993255D0-2B74-4667-AF4C-67CD13F6E572",
   "Title": "Mastering the Art of Cinematic FX",
   "Date": "2025-02-04T06:00:00+03:00",
   "Preview": "blog_post_2025_02_4_preview.webp",
   "Image": "blog_post_2025_02_4.webp",
   "Alt": "Mastering the Art of Cinematic FX",
   "CategoryIds": [
-    "9f4a6b2d-7e3f-4c1a-8b76-2f6c8d9e5f3a",
-    "1a3d5e7f-2c4b-6d8e-9f0a-7b1c3d5e7f2a"
+    "037E0B45-2F39-4141-9235-0D891813827E",
+    "F6DF5AA6-6833-4624-8B92-48CA7171295C"
   ],
-  "AuthorId": "a3d5e7f2-b6c8-4d9e-1f0a-7b1c3d5e7f2a",
+  "AuthorId": "219392DE-4414-4D0E-A93A-F5A1C171F2D4",
   "Short": "Mastering the Art of Cinematic FX - Impacts, Sweeps, Atmospheres & Soundscapes",
   "TagIds": [
-    "3f5b7d9e-1c2a-4b6d-8f0a-7e9c1d3f5b7d",
-    "6b8d9e1f-0a2c-4b7d-5e3f-9c1a7d8f0b6e"
-  ],
-  "LinkedPackIds": [
-    "8b7d9e1f-2a4c-6d0a-5f3b-7e9c1d3f5b7d"
-  ],
-  "DemoPackIds": [
-    "5b7d9e1f-0a2c-6d4b-8f3e-9c1a7d8f0b6e"
+    "C651E066-DADB-441E-BEED-930E7096DC37",
+    "DF007FDB-69E7-4777-A41C-A0147F209465"
   ],
   "ViewTitle": true,
   "TopBanner": "cinematic_fx_banner.webp",
   "Discount": 20,
-  "PostTargetId": "1d3f5b7e-9c2a-4b6d-8f0a-7c1d9e5f3b7d",
-  "PageTypeId": "1d3f5b7e-9c2a-4b6d-8f0a-7c1d9e5f3b7d",
+  "PostTargetId": "BEDE26BE-4E4C-490E-BE68-88E9803BCAEB",
+  "PageTypeId": "81545FF1-CDEA-40AA-8E11-7E3DD771B0ED",
   "Content": "In the world of music production, film scoring, and game sound design, sound effects play a crucial role in shaping the listener’s experience..."
 }

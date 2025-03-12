@@ -1,11 +1,9 @@
-using System;
-
-using Microsoft.AspNetCore.Components;
-
 namespace BlogSM.API.Domain;
 
 public class BlogPost : Entity
 {
+    public bool IsPublished { get; set; }
+    public string URLTitle { get; set; }
     public string Title { get; set; }
     public DateTime Date { get; set; }
     public string Preview { get; set; }

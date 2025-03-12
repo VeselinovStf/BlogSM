@@ -4,6 +4,11 @@ namespace BlogSM.API.DTOs.BlogPost;
 
 public class CreateBlogPostRequestDTO
 {
+    public bool IsPublished { get; set; }
+
+    [Required]
+    public string URLTitle { get; set; }
+
     [Required]
     public Guid LayoutId { get; set; }  // Match entity
 

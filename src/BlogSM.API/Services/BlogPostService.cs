@@ -1,22 +1,24 @@
 using System;
 
 using BlogSM.API.Domain;
+using BlogSM.API.Persistence;
 
 namespace BlogSM.API.Services;
 
-public class BlogPostService
+public class BlogPostService(BlogSMDbContext blogSMDbContext)
 {
-    private static readonly List<BlogPost> InMemmoryBlogPosts = new List<BlogPost>();
+    private readonly BlogSMDbContext _blogSMDbContext = blogSMDbContext;
+
     public void Create(BlogPost blogPost){
         // Business Logic - Store to Storage
 
-
-        InMemmoryBlogPosts.Add(blogPost);
+        _blogSMDbContext.BlogPosts.Add(blogPost);
+        _blogSMDbContext.SaveChanges();
     }
 
     public BlogPost? Get(Guid id){
         // Business Logic - Get from Storage
 
-        return InMemmoryBlogPosts.FirstOrDefault(p => p.Id == id);
+        return _blogSMDbContext.BlogPosts.FirstOrDefault(p => p.Id == id);
     }
 }

@@ -5,6 +5,8 @@ namespace BlogSM.API.DTOs.BlogPost;
 public class BlogPostResponseDTO
 {
     public Guid Id {get;set;}
+    public bool IsPublished { get; set; }
+    public string URLTitle { get; set; }
     public string Title { get; set; }
     public DateTime Date { get; set; }
     public string Preview { get; set; }

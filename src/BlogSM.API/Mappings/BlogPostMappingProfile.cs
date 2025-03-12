@@ -25,6 +25,8 @@ public class BlogPostMappingProfile : Profile
         CreateMap<BlogPost, BlogPostResponseDTO>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Layout, opt => opt.MapFrom(src => src.LayoutId.ToString()))
+            .ForMember(dest => dest.URLTitle, opt => opt.MapFrom(src => src.URLTitle.ToString()))
+            .ForMember(dest => dest.IsPublished, opt => opt.MapFrom(src => src.IsPublished.ToString()))
             .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.AuthorId.ToString()))
             .ForMember(dest => dest.PostTarget, opt => opt.MapFrom(src =>  src.PostTargetId.ToString()))
             .ForMember(dest => dest.PageType, opt => opt.MapFrom(src => src.PageTypeId))

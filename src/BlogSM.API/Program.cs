@@ -1,3 +1,4 @@
+
 using Asp.Versioning;
 
 using BlogSM.API.Persistence;
@@ -29,7 +30,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<BlogPostService>();
 
     builder.Services.AddDbContext<BlogSMDbContext>(options => 
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .UseSeeding(BlogSMDbSeed.SeedInitialData));
 }
 
 
