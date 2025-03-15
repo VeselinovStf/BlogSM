@@ -1,6 +1,6 @@
 # BlogSM
 
-BlogSM is a microservices-based application designed for managing a website-store and blog. It is built to facilitate CRUD operations on blog posts and integrates with a static site builder (Jekyll) for dynamic content generation. The application is evolving, and while it follows a microservices architecture, the current implementation is based on a monolithic API for managing blog posts.
+BlogSM is a application designed for managing a website blog. It is built to facilitate CRUD operations on blog posts and integrates with a static site builder (Jekyll) for dynamic content generation. The application is evolving, and while it follows a microservices architecture, the current implementation is based on a monolithic API for managing blog posts.
 
 ## Project Overview
 
