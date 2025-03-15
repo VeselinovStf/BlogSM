@@ -4,5 +4,5 @@ namespace BlogSM.API.Persistence.Repositories.Abstraction;
 
 public interface ICategoryRepository : IRepository<Category>
 {
-    IQueryable<Category> GetCategoriesByIds(IEnumerable<Guid> ids);
+    Task<IEnumerable<Category>> GetCategoriesByIdsAsync(IEnumerable<Guid> ids);
 }

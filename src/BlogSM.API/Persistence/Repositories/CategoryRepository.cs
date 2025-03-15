@@ -14,8 +14,8 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
     }
 
-    public IQueryable<Category> GetCategoriesByIds(IEnumerable<Guid> ids)
+    public async Task<IEnumerable<Category>> GetCategoriesByIdsAsync(IEnumerable<Guid> ids)
     {
-        return _dbSet.Where(c => ids.Contains(c.Id));
+        return await _dbSet.Where(c => ids.Contains(c.Id)).ToListAsync();
     }
 }

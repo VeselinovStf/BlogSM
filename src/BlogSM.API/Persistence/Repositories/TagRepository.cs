@@ -3,6 +3,8 @@ using System;
 using BlogSM.API.Domain;
 using BlogSM.API.Persistence.Repositories.Abstraction;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace BlogSM.API.Persistence.Repositories;
 
 public class TagRepository : Repository<Tag>, ITagRepository
@@ -11,8 +13,8 @@ public class TagRepository : Repository<Tag>, ITagRepository
     {
     }
 
-    public IQueryable<Tag> GetTagsByIds(IEnumerable<Guid> ids)
+    public async Task<IEnumerable<Tag>> GetTagsByIdsAsync(IEnumerable<Guid> ids)
     {
-        return _dbSet.Where(t => ids.Contains(t.Id));
+        return await _dbSet.Where(t => ids.Contains(t.Id)).ToListAsync();
     }
 }

@@ -6,5 +6,5 @@ namespace BlogSM.API.Persistence.Repositories.Abstraction;
 
 public interface ITagRepository : IRepository<Tag>
 {
-    IQueryable<Tag> GetTagsByIds(IEnumerable<Guid> ids);
+    Task<IEnumerable<Tag>> GetTagsByIdsAsync(IEnumerable<Guid> ids);
 }
