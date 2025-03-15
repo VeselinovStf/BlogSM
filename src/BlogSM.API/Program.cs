@@ -1,9 +1,11 @@
 
 using System.Net;
+using System.Reflection;
 using System.Text.Json;
 
 using Asp.Versioning;
 
+using BlogSM.API.Extensions;
 using BlogSM.API.Persistence;
 using BlogSM.API.Services;
 
@@ -30,7 +32,8 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-    builder.Services.AddScoped<BlogPostService>();
+    builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
+    builder.Services.AddServices(Assembly.GetExecutingAssembly());
 
     builder.Services.AddDbContext<BlogSMDbContext>(options => 
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))

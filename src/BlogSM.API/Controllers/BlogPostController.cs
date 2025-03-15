@@ -4,7 +4,7 @@ using AutoMapper;
 
 using BlogSM.API.Domain;
 using BlogSM.API.DTOs.BlogPost;
-using BlogSM.API.Services;
+using BlogSM.API.Services.Abstraction;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +14,10 @@ namespace BlogSM.API.Controllers
     [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class BlogPostController(IMapper mapper, BlogPostService blogPostService) : ControllerBase
+    public class BlogPostController(IMapper mapper, IBlogPostService blogPostService) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
-        private readonly BlogPostService _blogPostService = blogPostService;
+        private readonly IBlogPostService _blogPostService = blogPostService;
 
         [HttpGet("{blogPostId:guid}")]
         public async Task<IActionResult> Get(Guid blogPostId)

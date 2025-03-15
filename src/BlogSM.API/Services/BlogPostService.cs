@@ -1,22 +1,28 @@
 using BlogSM.API.Domain;
-using BlogSM.API.Persistence;
+using BlogSM.API.Persistence.Repositories.Abstraction;
+using BlogSM.API.Services.Abstraction;
 using BlogSM.API.Services.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogSM.API.Services;
 
-public class BlogPostService(BlogSMDbContext blogSMDbContext)
+public class BlogPostService(
+    IBlogPostRepository blogPostRepo, 
+    ICategoryRepository categoryRepo,
+    ITagRepository tagRepo) : IBlogPostService
 {
-    private readonly BlogSMDbContext _blogSMDbContext = blogSMDbContext;
+    private readonly IBlogPostRepository _blogPostRepo = blogPostRepo;
+    private readonly ICategoryRepository _categoryRepo = categoryRepo;
+    private readonly ITagRepository _tagRepo = tagRepo;
 
     public async Task<ServiceResponse<BlogPost>> Create(BlogPost blogPost)
     {
         var response = new ServiceResponse<BlogPost>(false);
 
-        var categories = await _blogSMDbContext.Categorys
-                    .Where(c => blogPost.Categories.Select(e => e.Id).Contains(c.Id))
-                    .ToListAsync();
+        var categories = await _categoryRepo
+            .GetCategoriesByIds(blogPost.Categories.Select(e => e.Id))
+            .ToListAsync();
 
         if (categories.Count != blogPost.Categories.Count)
         {
@@ -25,8 +31,7 @@ public class BlogPostService(BlogSMDbContext blogSMDbContext)
         }
 
         // Business Logic - Ensure tags exist in DB
-        var tags = await _blogSMDbContext.Tags
-            .Where(t => blogPost.Tags.Select(bpt => bpt.Id).Contains(t.Id))
+        var tags = await _tagRepo.GetTagsByIds(blogPost.Tags.Select(bpt => bpt.Id))
             .ToListAsync();
 
         if (tags.Count != blogPost.Tags.Count)
@@ -42,13 +47,13 @@ public class BlogPostService(BlogSMDbContext blogSMDbContext)
         // LinkedPack
         // PostTarget
         // PageType
-        // Image - is existing at all - TODO: How images are imported to the mayne projec
+        // Image - is existing at all - TODO: How images are imported to the main project
 
         blogPost.Categories = categories;
         blogPost.Tags = tags;
 
-        await _blogSMDbContext.BlogPosts.AddAsync(blogPost);
-        await _blogSMDbContext.SaveChangesAsync();
+        await _blogPostRepo.AddAsync(blogPost);
+        await _blogPostRepo.SaveAsync();
 
         response.Success = true;
         response.Message = "Blog post created successfully.";
@@ -59,10 +64,7 @@ public class BlogPostService(BlogSMDbContext blogSMDbContext)
 
     public async Task<ServiceResponse<BlogPost>> Get(Guid id)
     {
-        var blogPost = await _blogSMDbContext.BlogPosts
-            .Include(bp => bp.Categories) // TODO: Take only Id's
-            .Include(bp => bp.Tags)
-            .FirstOrDefaultAsync(p => p.Id == id);
+        var blogPost = await _blogPostRepo.GetPostWithCategoriesAndTagsAsync(id);
 
         if (blogPost == null)
         {
