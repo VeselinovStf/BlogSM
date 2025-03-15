@@ -1,4 +1,7 @@
 
+using System.Net;
+using System.Text.Json;
+
 using Asp.Versioning;
 
 using BlogSM.API.Persistence;
@@ -38,6 +41,17 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.MapControllers();
+
+    app.UseExceptionHandler(appError => {
+        appError.Run(async context =>
+               {
+                   context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; // HTTP 500
+                   context.Response.ContentType = "application/json";
+                   var errorResponse = new { success=false, message = "An unexpected error occurred." };
+
+                   await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
+               });
+    });
 }
 
 app.Run();
