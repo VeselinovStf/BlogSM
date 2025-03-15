@@ -10,6 +10,66 @@ public class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
        public void Configure(EntityTypeBuilder<BlogPost> builder)
        {
               builder.HasKey(b => b.Id);
+              
+              builder.Property(bp => bp.URLTitle)
+                     .IsRequired()
+                     .HasMaxLength(80)
+                     .HasColumnType("nvarchar(80)");
+
+              builder.Property(bp => bp.Title)
+                     .IsRequired()
+                     .HasMaxLength(80)
+                     .HasColumnType("nvarchar(80)");
+
+              builder.Property(bp => bp.Date)
+                     .IsRequired();
+
+              builder.Property(bp => bp.Preview)
+                     .IsRequired()
+                     .HasMaxLength(80)
+                     .HasColumnType("nvarchar(80)");
+
+              builder.Property(bp => bp.Image)
+                     .IsRequired()
+                     .HasMaxLength(80)
+                     .HasColumnType("nvarchar(80)");
+
+              builder.Property(bp => bp.Alt)
+                     .IsRequired()
+                     .HasMaxLength(80)
+                     .HasColumnType("nvarchar(80)");
+
+              builder.Property(bp => bp.LayoutId)
+                     .IsRequired();
+
+              builder.Property(bp => bp.Date)
+                     .IsRequired();
+
+              builder.Property(bp => bp.AuthorId)
+                     .IsRequired();
+
+              builder.Property(bp => bp.Alt)
+                     .IsRequired()
+                     .HasMaxLength(80)
+                     .HasColumnType("nvarchar(80)");
+
+              builder.Property(bp => bp.Short)
+                     .IsRequired()
+                     .HasMaxLength(80)
+                     .HasColumnType("nvarchar(80)");
+
+              builder.Property(bp => bp.ViewTitle)
+                     .IsRequired();
+
+              builder.Property(bp => bp.PageTypeId)
+                       .IsRequired();
+
+              builder.Property(bp => bp.PostTargetId)
+                       .IsRequired();
+
+              builder.Property(bp => bp.Content)
+                     .IsRequired()
+                     .HasColumnType("nvarchar(MAX)");
 
               // Define relationships
               builder.HasOne(b => b.Layout)

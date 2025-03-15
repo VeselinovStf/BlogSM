@@ -16,10 +16,10 @@ public class BlogPostMappingProfile : Profile
             .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.AuthorId))
             .ForMember(dest => dest.PostTargetId, opt => opt.MapFrom(src => src.PostTargetId))
             .ForMember(dest => dest.PageTypeId, opt => opt.MapFrom(src => src.PageTypeId))
-            .ForMember(dest => dest.Categories, opt => opt.Ignore()) // Categories will be mapped manually
-            .ForMember(dest => dest.Tags, opt => opt.Ignore())        // Tags will be mapped manually
-            .ForMember(dest => dest.LinkedPacks, opt => opt.Ignore()) // LinkedPacks manually handled
-            .ForMember(dest => dest.DemoPacks, opt => opt.Ignore());
+            .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.CategoryIds.Select(c => new Category(){ Id = c }))) // Categories will be mapped manually
+            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.TagIds.Select(t => new Tag(){ Id = t})))        // Tags will be mapped manually
+            .ForMember(dest => dest.LinkedPacks, opt => opt.MapFrom(src => src.LinkedPackIds.Select(l => new Pack(){Id = l})))  // LinkedPacks manually handled
+            .ForMember(dest => dest.DemoPacks, opt => opt.MapFrom(src => src.DemoPackIds.Select(d => new Pack(){ Id = d})));
 
         // Entity → DTO (Response)
         CreateMap<BlogPost, BlogPostResponseDTO>()

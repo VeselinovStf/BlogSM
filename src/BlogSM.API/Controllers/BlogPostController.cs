@@ -7,8 +7,6 @@ using BlogSM.API.DTOs.BlogPost;
 using BlogSM.API.Services;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BlogSM.API.Controllers
 {
@@ -22,37 +20,54 @@ namespace BlogSM.API.Controllers
         private readonly BlogPostService _blogPostService = blogPostService;
 
         [HttpGet("{blogPostId:guid}")]
-        public IActionResult Get(Guid blogPostId)
+        public async Task<IActionResult> Get(Guid blogPostId)
         {
             // USECASE - GET PRODUCT
-            var blogPost = _blogPostService.Get(blogPostId);
+            var blogPost = await _blogPostService.Get(blogPostId);
+
+            if(!blogPost.Success){
+                return NotFound(new { blogPost.Message });
+            }
 
             // MAP TO EXTERNAL REPRESENTATION
-            var blogPostResponseModel = _mapper.Map<BlogPostResponseDTO>(blogPost);
+            var blogPostResponseModel = _mapper.Map<BlogPostResponseDTO>(blogPost.Data);
 
-            return blogPostResponseModel is null 
-                ? Problem(statusCode: StatusCodes.Status404NotFound, detail: $"Blog Post with id: {blogPostId} is not found") 
-                : Ok(blogPostResponseModel);
+            return Ok(blogPostResponseModel);
         }
 
         [HttpPost]
-        public IActionResult Create(CreateBlogPostRequestDTO createBlogPostRequest)
+        public async Task<IActionResult> Create(CreateBlogPostRequestDTO createBlogPostRequest)
         {
             // MAP TO INTERNAL REPRESENTATION
             var newBlogPost = _mapper.Map<BlogPost>(createBlogPostRequest);
 
             // USECASE - CREATE PRODUCT
-            _blogPostService.Create(newBlogPost);
+            var createdBlogPost = await _blogPostService.Create(newBlogPost);
+
+            if (!createdBlogPost.Success)
+            {
+                return BadRequest(new { message = createdBlogPost.Message });
+            }
 
             // MAP TO EXTERNAL REPRESENTATION
-            var createdBlogPostResponseModel = _mapper.Map<BlogPostResponseDTO>(newBlogPost);
+            var createdBlogPostResponseModel = _mapper.Map<BlogPostResponseDTO>(createdBlogPost.Data);
 
             // RETURN RESULT
             return CreatedAtAction(
                 nameof(Get),
                 new { BlogPostId = createdBlogPostResponseModel.Id },
-                createdBlogPostResponseModel
-            );
+                new
+                {
+                    success = createdBlogPost.Success,
+                    message = createdBlogPost.Message,
+                    data = createdBlogPostResponseModel
+                });
         }
+
+        // TODO: Update/Put
+
+        // TODO: Delete
+        
+        // TODO: Publish/Unpublish - Contains logic for moving the actual post to the SITE
     }
 }
