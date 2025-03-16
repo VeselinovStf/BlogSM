@@ -16,7 +16,13 @@ public class Get_Should
     private readonly Mock<IBlogPostRepository> _blogPostRepoMock;
     private readonly Mock<ICategoryRepository> _categoryRepoMock;
     private readonly Mock<ITagRepository> _tagRepoMock;
+    private readonly Mock<IAuthorRepository> _authorRepoMock;
+    private readonly Mock<ILayoutRepository> _layoutRepoMock;
+    private readonly Mock<IPackRepository> _packRepoMock;
+    private readonly Mock<IPageTypeRepository> _pageTypeRepoMock;
+    private readonly Mock<IPostTargetRepository> _postTargetRepoMock;
     private readonly ServiceLayer.BlogPostService _blogPostService;
+
     private readonly Mock<ILogger<ServiceLayer.BlogPostService>> _loggerMock;
 
     public Get_Should()
@@ -25,12 +31,26 @@ public class Get_Should
         _blogPostRepoMock = new Mock<IBlogPostRepository>();
         _categoryRepoMock = new Mock<ICategoryRepository>();
         _tagRepoMock = new Mock<ITagRepository>();
+        _authorRepoMock = new Mock<IAuthorRepository>();
+        _layoutRepoMock = new Mock<ILayoutRepository>();
+        _packRepoMock = new Mock<IPackRepository>();
+        _pageTypeRepoMock = new Mock<IPageTypeRepository>();
+        _postTargetRepoMock = new Mock<IPostTargetRepository>();
+
         _loggerMock = new Mock<ILogger<ServiceLayer.BlogPostService>>();
 
         // Initialize the service with mocked dependencies
-        _blogPostService = new ServiceLayer.BlogPostService(_blogPostRepoMock.Object, _categoryRepoMock.Object, _tagRepoMock.Object, _loggerMock.Object);
+        _blogPostService = new ServiceLayer.BlogPostService(
+            _blogPostRepoMock.Object,
+            _categoryRepoMock.Object,
+             _tagRepoMock.Object,
+             _authorRepoMock.Object,
+             _layoutRepoMock.Object,
+             _packRepoMock.Object,
+             _pageTypeRepoMock.Object,
+             _postTargetRepoMock.Object,
+             _loggerMock.Object);
     }
-
     // 1. Happy Path Test (Found BlogPost)
     [Fact]
     public async Task Get_ShouldReturnBlogPost_WhenBlogPostExists()

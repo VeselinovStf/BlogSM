@@ -2,9 +2,9 @@ POST {{host}}/blogpost
 Content-Type: application/json
 
 {
-  "URLTitle": "mastering-art-of-cinematic-fx",
+  "URLTitle": "mastering-art-of-cinematic-fx-3",
   "LayoutId": "993255D0-2B74-4667-AF4C-67CD13F6E572",
-  "Title": "Mastering the Art of Cinematic FX",
+  "Title": "Mastering the Art of Cinematic FX-2",
   "Date": "2025-02-04T06:00:00+03:00",
   "Preview": "blog_post_2025_02_4_preview.webp",
   "Image": "blog_post_2025_02_4.webp",
@@ -24,5 +24,11 @@ Content-Type: application/json
   "Discount": 20,
   "PostTargetId": "BEDE26BE-4E4C-490E-BE68-88E9803BCAEB",
   "PageTypeId": "81545FF1-CDEA-40AA-8E11-7E3DD771B0ED",
-  "Content": "In the world of music production, film scoring, and game sound design, sound effects play a crucial role in shaping the listener’s experience..."
+  "Content": "In the world of music production, film scoring, and game sound design, sound effects play a crucial role in shaping the listener’s experience...",
+  "LinkedPackIds":[
+    "ACFDC3D5-3D21-4070-A870-92F510FC8E9F"
+  ],
+  "DemoPackIds":[
+    "B95764C9-6B00-470A-A842-9F5128BBBA74"
+  ]
 }

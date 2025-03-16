@@ -14,6 +14,11 @@ public class Create_Should
     private readonly Mock<IBlogPostRepository> _blogPostRepoMock;
     private readonly Mock<ICategoryRepository> _categoryRepoMock;
     private readonly Mock<ITagRepository> _tagRepoMock;
+    private readonly Mock<IAuthorRepository> _authorRepoMock;
+    private readonly Mock<ILayoutRepository> _layoutRepoMock;
+    private readonly Mock<IPackRepository> _packRepoMock;
+    private readonly Mock<IPageTypeRepository> _pageTypeRepoMock;
+    private readonly Mock<IPostTargetRepository> _postTargetRepoMock;
     private readonly ServiceLayer.BlogPostService _blogPostService;
 
     private readonly Mock<ILogger<ServiceLayer.BlogPostService>> _loggerMock;
@@ -24,10 +29,25 @@ public class Create_Should
         _blogPostRepoMock = new Mock<IBlogPostRepository>();
         _categoryRepoMock = new Mock<ICategoryRepository>();
         _tagRepoMock = new Mock<ITagRepository>();
+        _authorRepoMock = new Mock<IAuthorRepository>();
+        _layoutRepoMock = new Mock<ILayoutRepository>();
+        _packRepoMock = new Mock<IPackRepository>();
+        _pageTypeRepoMock = new Mock<IPageTypeRepository>();
+        _postTargetRepoMock = new Mock<IPostTargetRepository>();
+
         _loggerMock = new Mock<ILogger<ServiceLayer.BlogPostService>>();
 
         // Initialize the service with mocked dependencies
-        _blogPostService = new ServiceLayer.BlogPostService(_blogPostRepoMock.Object, _categoryRepoMock.Object, _tagRepoMock.Object, _loggerMock.Object);
+        _blogPostService = new ServiceLayer.BlogPostService(
+            _blogPostRepoMock.Object, 
+            _categoryRepoMock.Object,
+             _tagRepoMock.Object,
+             _authorRepoMock.Object,
+             _layoutRepoMock.Object,
+             _packRepoMock.Object,
+             _pageTypeRepoMock.Object,
+             _postTargetRepoMock.Object,
+             _loggerMock.Object);
     }
 
     [Fact]
@@ -38,7 +58,11 @@ public class Create_Should
         {
             Id = Guid.NewGuid(),
             Categories = new List<Category> { new Category { Id = Guid.NewGuid() } },
-            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } }
+            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } },
+            LayoutId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            PostTargetId = Guid.NewGuid(),
+            PageTypeId = Guid.NewGuid()
         };
 
         // Setup mocks
@@ -47,6 +71,18 @@ public class Create_Should
 
         _tagRepoMock.Setup(repo => repo.GetTagsByIdsAsync(It.IsAny<IEnumerable<Guid>>()))
             .ReturnsAsync(new List<Tag> { new Tag { Id = blogPost.Tags.First().Id } }.AsQueryable());
+
+        _layoutRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Layout(){ Id = blogPost.LayoutId });
+
+        _authorRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Author() { Id = blogPost.AuthorId });
+
+        _postTargetRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PostTarget() { Id = blogPost.PostTargetId });
+
+        _pageTypeRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PageType() { Id = blogPost.PageTypeId });
 
         // Mock AddAsync and SaveAsync methods
         _blogPostRepoMock.Setup(repo => repo.AddAsync(It.IsAny<DomainLayer.BlogPost>()))
@@ -73,7 +109,11 @@ public class Create_Should
         {
             Id = Guid.NewGuid(),
             Categories = new List<Category> { new Category { Id = Guid.NewGuid() } },
-            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } }
+            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } },
+            LayoutId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            PostTargetId = Guid.NewGuid(),
+            PageTypeId = Guid.NewGuid()
         };
 
         // Setup mocks
@@ -82,6 +122,18 @@ public class Create_Should
 
         _tagRepoMock.Setup(repo => repo.GetTagsByIdsAsync(It.IsAny<IEnumerable<Guid>>()))
             .ReturnsAsync(new List<Tag> { new Tag { Id = blogPost.Tags.First().Id } }.AsQueryable());
+
+        _layoutRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Layout() { Id = blogPost.LayoutId });
+
+        _authorRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Author() { Id = blogPost.AuthorId });
+
+        _postTargetRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PostTarget() { Id = blogPost.PostTargetId });
+
+        _pageTypeRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PageType() { Id = blogPost.PageTypeId });
 
         // Mock AddAsync and SaveAsync methods
         _blogPostRepoMock.Setup(repo => repo.AddAsync(It.IsAny<DomainLayer.BlogPost>()))
@@ -108,12 +160,28 @@ public class Create_Should
         {
             Id = Guid.NewGuid(),
             Categories = new List<Category> { new Category { Id = Guid.NewGuid() } },
-            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } }
+            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } },
+            LayoutId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            PostTargetId = Guid.NewGuid(),
+            PageTypeId = Guid.NewGuid()
         };
 
         // Setup mocks for categories (simulate non-existing category)
         _categoryRepoMock.Setup(repo => repo.GetCategoriesByIdsAsync(It.IsAny<IEnumerable<Guid>>()))
             .ReturnsAsync(new List<Category>());
+
+        _layoutRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Layout() { Id = blogPost.LayoutId });
+
+        _authorRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Author() { Id = blogPost.AuthorId });
+
+        _postTargetRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PostTarget() { Id = blogPost.PostTargetId });
+
+        _pageTypeRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PageType() { Id = blogPost.PageTypeId });
 
         _tagRepoMock.Setup(repo => repo.GetTagsByIdsAsync(It.IsAny<IEnumerable<Guid>>()))
             .ReturnsAsync(new List<Tag> { new Tag { Id = blogPost.Tags.First().Id } }.AsQueryable());
@@ -141,12 +209,28 @@ public class Create_Should
         {
             Id = Guid.NewGuid(),
             Categories = new List<Category> { new Category { Id = Guid.NewGuid() } },
-            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } }
+            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } },
+            LayoutId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            PostTargetId = Guid.NewGuid(),
+            PageTypeId = Guid.NewGuid()
         };
 
         // Setup mocks for tags (simulate non-existing tag)
         _tagRepoMock.Setup(repo => repo.GetTagsByIdsAsync(It.IsAny<IEnumerable<Guid>>()))
             .ReturnsAsync(new List<Tag>());
+
+        _layoutRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Layout() { Id = blogPost.LayoutId });
+
+        _authorRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Author() { Id = blogPost.AuthorId });
+
+        _postTargetRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PostTarget() { Id = blogPost.PostTargetId });
+
+        _pageTypeRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PageType() { Id = blogPost.PageTypeId });
 
         // Setup mocks
         _categoryRepoMock.Setup(repo => repo.GetCategoriesByIdsAsync(It.IsAny<IEnumerable<Guid>>()))
@@ -175,8 +259,24 @@ public class Create_Should
         {
             Id = Guid.NewGuid(),
             Categories = new List<Category>(),
-            Tags = new List<Tag>()
+            Tags = new List<Tag>(),
+            LayoutId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            PostTargetId = Guid.NewGuid(),
+            PageTypeId = Guid.NewGuid()
         };
+
+        _layoutRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Layout() { Id = blogPost.LayoutId });
+
+        _authorRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+           .ReturnsAsync(new Author() { Id = blogPost.AuthorId });
+
+        _postTargetRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PostTarget() { Id = blogPost.PostTargetId });
+
+        _pageTypeRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PageType() { Id = blogPost.PageTypeId });
 
         // Act
         var result = await _blogPostService.Create(blogPost);
@@ -219,7 +319,11 @@ public class Create_Should
         {
             Id = Guid.NewGuid(),
             Categories = new List<Category> { new Category { Id = Guid.NewGuid() } },
-            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } }
+            Tags = new List<Tag> { new Tag { Id = Guid.NewGuid() } },
+            LayoutId = Guid.NewGuid(),
+            AuthorId = Guid.NewGuid(),
+            PostTargetId = Guid.NewGuid(),
+            PageTypeId = Guid.NewGuid()
         };
 
         // Setup mocks
@@ -229,6 +333,18 @@ public class Create_Should
         _tagRepoMock.Setup(repo => repo.GetTagsByIdsAsync(It.IsAny<IEnumerable<Guid>>()))
             .ReturnsAsync(new List<Tag> { new Tag { Id = blogPost.Tags.First().Id } });
 
+        _layoutRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Layout() { Id = blogPost.LayoutId });
+
+        _authorRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new Author() { Id = blogPost.AuthorId });
+
+        _postTargetRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PostTarget() { Id = blogPost.PostTargetId });
+
+        _pageTypeRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new PageType() { Id = blogPost.PageTypeId });
+            
         _blogPostRepoMock.Setup(repo => repo.AddAsync(It.IsAny<DomainLayer.BlogPost>()))
             .Returns(Task.CompletedTask);  // Simulate adding a blog post
 

@@ -25,8 +25,8 @@ public class BlogPost : Entity
     public Guid LayoutId { get; set; }
     public Layout Layout { get; set; }
     public ICollection<Tag> Tags { get; set; }
-    public ICollection<Pack> LinkedPacks { get; set; }
-    public ICollection<Pack> DemoPacks { get; set; }
+    public ICollection<Pack> LinkedPacks { get; set; } = new HashSet<Pack>();
+    public ICollection<Pack> DemoPacks { get; set; } = new HashSet<Pack>();
     public ICollection<Category> Categories { get; set; }
 
 }

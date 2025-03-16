@@ -69,5 +69,12 @@ public static class BlogSMDbSeed
             context.SaveChanges();
         }
 
+        var packs = context.Set<Pack>().FirstOrDefault();
+        if(packs == null)
+        {
+            context.Set<Pack>().Add(new Pack { Name = "Demo Pack 1" });
+            context.Set<Pack>().Add(new Pack { Name = "Demo Pack 2" });
+            context.SaveChanges();
+        }
     }
 }
