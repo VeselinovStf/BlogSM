@@ -7,54 +7,79 @@ using Asp.Versioning;
 
 using BlogSM.API.Extensions;
 using BlogSM.API.Persistence;
-using BlogSM.API.Services;
 
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+using NLog;
+using NLog.Web;
+
+var logger = NLog.LogManager.Setup().LoadConfigurationFromFile("nlog.config").GetCurrentClassLogger();
+
+try
 {
-    builder.Services.AddControllers();
+    logger.Info("BlogSM.API Starting...");
 
-    builder.Services.AddApiVersioning(options =>
-      {
-          options.DefaultApiVersion = new ApiVersion(1, 0);
-          options.AssumeDefaultVersionWhenUnspecified = true;
-          options.ReportApiVersions = true;
-          options.ApiVersionReader = ApiVersionReader.Combine(
-              new UrlSegmentApiVersionReader(),
-              new HeaderApiVersionReader("X-Api-Version")
-          );
-      }).AddApiExplorer(options =>
-      {
-          options.GroupNameFormat = "'v'VVV";
-          options.SubstituteApiVersionInUrl = true;
-      });
+    var builder = WebApplication.CreateBuilder(args);
+    {
+        builder.Services.AddControllers();
 
-    builder.Services.AddAutoMapper(typeof(Program).Assembly);
+        builder.Services.AddApiVersioning(options =>
+          {
+              options.DefaultApiVersion = new ApiVersion(1, 0);
+              options.AssumeDefaultVersionWhenUnspecified = true;
+              options.ReportApiVersions = true;
+              options.ApiVersionReader = ApiVersionReader.Combine(
+                  new UrlSegmentApiVersionReader(),
+                  new HeaderApiVersionReader("X-Api-Version")
+              );
+          }).AddApiExplorer(options =>
+          {
+              options.GroupNameFormat = "'v'VVV";
+              options.SubstituteApiVersionInUrl = true;
+          });
 
-    builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
-    builder.Services.AddServices(Assembly.GetExecutingAssembly());
+        // Use NLog as the logging provider
+        builder.Logging.ClearProviders();
+        builder.Host.UseNLog();
 
-    builder.Services.AddDbContext<BlogSMDbContext>(options => 
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-        .UseSeeding(BlogSMDbSeed.SeedInitialData));
+        builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+        builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
+        builder.Services.AddServices(Assembly.GetExecutingAssembly());
+
+        builder.Services.AddDbContext<BlogSMDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            .UseSeeding(BlogSMDbSeed.SeedInitialData));
+    }
+
+
+    var app = builder.Build();
+    {
+        app.MapControllers();
+
+        app.UseExceptionHandler(appError =>
+        {
+            appError.Run(async context =>
+                   {
+                       context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; // HTTP 500
+                       context.Response.ContentType = "application/json";
+                       var errorResponse = new { success = false, message = "An unexpected error occurred." };
+
+                       await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
+                   });
+        });
+    }
+
+    app.Run();
 }
-
-
-var app = builder.Build();
+catch (Exception exception)
 {
-    app.MapControllers();
-
-    app.UseExceptionHandler(appError => {
-        appError.Run(async context =>
-               {
-                   context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; // HTTP 500
-                   context.Response.ContentType = "application/json";
-                   var errorResponse = new { success=false, message = "An unexpected error occurred." };
-
-                   await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
-               });
-    });
+    // NLog: catch setup errors
+    logger.Error(exception, "Stopped program because of exception");
+    throw;
 }
-
-app.Run();
+finally
+{
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    NLog.LogManager.Shutdown();
+}

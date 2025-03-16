@@ -1,2 +1,2 @@
-GET {{host}}/blogpost/fa8edc2b-199f-41ae-9957-43a84ed4eb2e
+GET {{host}}/blogpost/fa8edc2b-199f-41ae-9957-43a84ed4eb2b
 Accept: application/json
