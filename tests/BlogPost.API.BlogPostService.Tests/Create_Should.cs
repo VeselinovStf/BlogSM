@@ -51,7 +51,7 @@ public class Create_Should
     }
 
     [Fact]
-    public async Task Create_ShouldReturnSuccess_WhenValidBlogPostParameterIsPassed()
+    public async Task ReturnSuccess_WhenValidBlogPostParameterIsPassed()
     {
         // Arrange
         var blogPost = new DomainLayer.BlogPost
@@ -102,7 +102,7 @@ public class Create_Should
     }
 
     [Fact]
-    public async Task Create_ShouldSaveNewBlogPost_WhenValidBlogPostParameterIsPassed()
+    public async Task SaveNewBlogPost_WhenValidBlogPostParameterIsPassed()
     {
         // Arrange
         var blogPost = new DomainLayer.BlogPost
@@ -153,7 +153,7 @@ public class Create_Should
     }
 
     [Fact]
-    public async Task Create_ShouldReturnError_WhenCategoriesDoNotExist()
+    public async Task ReturnError_WhenCategoriesDoNotExist()
     {
         // Arrange
         var blogPost = new DomainLayer.BlogPost
@@ -202,7 +202,7 @@ public class Create_Should
     }
 
     [Fact]
-    public async Task Create_ShouldReturnError_WhenTagsDoNotExist()
+    public async Task ReturnError_WhenTagsDoNotExist()
     {
         // Arrange
         var blogPost = new DomainLayer.BlogPost
@@ -252,7 +252,7 @@ public class Create_Should
     }
 
     [Fact]
-    public async Task Create_ShouldReturnError_WhenTagsAndCategoriesAreEmpty()
+    public async Task ReturnError_WhenTagsAndCategoriesAreEmpty()
     {
         // Arrange
         var blogPost = new DomainLayer.BlogPost
@@ -294,7 +294,7 @@ public class Create_Should
     }
 
     [Fact]
-    public async Task Create_ShouldReturnError_WhenBlogPostIsNull()
+    public async Task ReturnError_WhenBlogPostIsNull()
     {
         // Arrange
         DomainLayer.BlogPost blogPost = null;
@@ -312,7 +312,7 @@ public class Create_Should
     }
 
     [Fact]
-    public async Task Create_ShouldReturnError_WhenSaveFails()
+    public async Task ReturnError_WhenSaveFails()
     {
         // Arrange
         var blogPost = new DomainLayer.BlogPost

@@ -53,7 +53,7 @@ public class Get_Should
     }
     // 1. Happy Path Test (Found BlogPost)
     [Fact]
-    public async Task Get_ShouldReturnBlogPost_WhenBlogPostExists()
+    public async Task ReturnBlogPost_WhenBlogPostExists()
     {
         // Arrange
         var blogPostId = Guid.NewGuid();
@@ -80,7 +80,7 @@ public class Get_Should
 
     // 2. Not Found Test
     [Fact]
-    public async Task Get_ShouldReturnNotFound_WhenBlogPostDoesNotExist()
+    public async Task ReturnNotFound_WhenBlogPostDoesNotExist()
     {
         // Arrange
         var blogPostId = Guid.NewGuid();
@@ -99,7 +99,7 @@ public class Get_Should
 
     // 3. Exception Handling Test
     [Fact]
-    public async Task Get_ShouldHandleException_WhenExceptionOccurs()
+    public async Task HandleException_WhenExceptionOccurs()
     {
         // Arrange
         var blogPostId = Guid.NewGuid();
