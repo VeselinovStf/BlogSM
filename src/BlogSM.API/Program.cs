@@ -48,7 +48,8 @@ try
         builder.Services.AddServices(Assembly.GetExecutingAssembly());
 
         builder.Services.AddDbContext<BlogSMDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            options.UseSqlServer(builder.Environment.IsProduction() ? 
+                Environment.GetEnvironmentVariable("BlogSmAPIConnectionString") : builder.Configuration.GetConnectionString("DefaultConnection"))
             .UseSeeding(BlogSMDbSeed.SeedInitialData));
     }
 

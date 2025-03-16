@@ -46,8 +46,9 @@ BlogSM is a multi-functional system that combines the management of a blog and a
     dotnet build
 
 3. Setup DB:
-    docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=!Aa12345678" -p 1433:1433 --name sql1 --hostname sql1  -d mcr.microsoft.com/mssql/server:2022-latest
-
+   - docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=!Aa12345678" -p 1433:1433 --name sql1 --hostname sql1  -d mcr.microsoft.com/mssql/server:2022-latest
+   - **NOTE: When app is run in Production set env variable BlogSmAPIConnectionString that must hold the db connection string, change this for db container props to!!!**
+   
 4. Run the application:
    ```bash
    dotnet run --project BlogSM.API
