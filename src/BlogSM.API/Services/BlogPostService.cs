@@ -3,8 +3,6 @@ using BlogSM.API.Persistence.Repositories.Abstraction;
 using BlogSM.API.Services.Abstraction;
 using BlogSM.API.Services.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace BlogSM.API.Services;
 
 public class BlogPostService(
@@ -36,6 +34,7 @@ public class BlogPostService(
                 return response;
             }
 
+            // Business Logic - Ensure categories exist in DB
             var categories = await _categoryRepo
                 .GetCategoriesByIdsAsync(blogPost.Categories.Select(e => e.Id));
 
@@ -55,8 +54,7 @@ public class BlogPostService(
                 return response;
             }
 
-            // TODO: Rest of this
-            // Business Logic - Ensure categories exist in DB
+            // TODO: Rest of this       
             // Layout
             // Author
             // LinkedPack
@@ -90,13 +88,31 @@ public class BlogPostService(
 
     public async Task<ServiceResponse<BlogPost>> Get(Guid id)
     {
-        var blogPost = await _blogPostRepo.GetPostWithCategoriesAndTagsAsync(id);
+        var response = new ServiceResponse<BlogPost>(false);
 
-        if (blogPost == null)
+        try
         {
-            return new ServiceResponse<BlogPost>(false, $"Blog Post with id: {id} is not found");
+            var blogPost = await _blogPostRepo.GetPostWithCategoriesAndTagsAsync(id);
+
+            if (blogPost == null)
+            {
+                response.Message = $"Blog post not found";
+                return response;
+            }
+
+            response.Success = true;
+            response.Message = "Blog post retrieved successfully.";
+            response.Data = blogPost;
+        }
+        catch (Exception ex)
+        {
+            response.Message = "An error occurred while retrieving the blog post";
+            response.Success = false;
+            response.Data = null;
+
+            _logger.LogError($"An error occurred while retrieving the blog post: {ex.Message}");
         }
 
-        return new ServiceResponse<BlogPost>(true, "Blog post retrieved successfully.", blogPost);
+        return response;
     }
 }
