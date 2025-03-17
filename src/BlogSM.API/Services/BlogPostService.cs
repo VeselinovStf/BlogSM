@@ -129,7 +129,10 @@ public class BlogPostService(
                 return response;
             }
 
-            // Image - is existing at all - TODO: How images are imported to the main project
+            // Image
+            // TODO: How images are imported to the main project
+            // Every Post is going to have its own `Setting` that  is going to point to witch `Project` is related
+            // The `Setting` is going to contain the in/out folders, same `Setting` is going to be used for Publishing
 
             blogPost.Categories = categories.ToList();
             blogPost.Tags = tags.ToList();
