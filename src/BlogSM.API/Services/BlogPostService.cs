@@ -46,7 +46,8 @@ public class BlogPostService(
                 return response;
             }
 
-            if (blogPost.Categories.Select(c => c.Id).ToHashSet().Count() != blogPost.Categories.Count())
+            var blogPostCategoryUniqueIds = blogPost.Categories.Select(c => c.Id).ToHashSet();
+            if (blogPostCategoryUniqueIds.Count() != blogPost.Categories.Count())
             {
                 response.Message = "Categories must have unique IDs.";
                 return response;
@@ -54,7 +55,7 @@ public class BlogPostService(
 
             // Business Logic - Ensure categories exist in DB
             var categories = await _categoryRepo
-                .GetCategoriesByIdsAsync(blogPost.Categories.Select(e => e.Id));
+                .GetCategoriesByIdsAsync(blogPostCategoryUniqueIds);
 
             if (categories.Count() != blogPost.Categories.Count)
             {
@@ -62,7 +63,8 @@ public class BlogPostService(
                 return response;
             }
 
-            if (blogPost.Tags.Select(c => c.Id).ToHashSet().Count() != blogPost.Tags.Count())
+            var blogPostTagUniqueIds = blogPost.Tags.Select(c => c.Id).ToHashSet();
+            if (blogPostTagUniqueIds.Count() != blogPost.Tags.Count())
             {
                 response.Message = "Tags must have unique IDs.";
                 return response;
@@ -70,7 +72,7 @@ public class BlogPostService(
 
             // Business Logic - Ensure tags exist in DB
             var tags = await _tagRepo
-                .GetTagsByIdsAsync(blogPost.Tags.Select(bpt => bpt.Id));
+                .GetTagsByIdsAsync(blogPostTagUniqueIds);
 
             if (tags.Count() != blogPost.Tags.Count)
             {
@@ -97,15 +99,15 @@ public class BlogPostService(
             // Business Logic - Ensure Packs for LinkedPack/DemoPacks exist in DB
             if (blogPost.LinkedPacks.Any() || blogPost.DemoPacks.Any())
             {
-                var linkedPacksIds = blogPost.LinkedPacks.Select(p => p.Id).ToHashSet();
-                if (linkedPacksIds.Count() != blogPost.LinkedPacks.Count())
+                var linkedPacksUniqueIds = blogPost.LinkedPacks.Select(p => p.Id).ToHashSet();
+                if (linkedPacksUniqueIds.Count() != blogPost.LinkedPacks.Count())
                 {
                     response.Message = "Can't use duplicated packs in Linked Packs";
                     return response;
                 }
 
-                var demoPackIds = blogPost.DemoPacks.Select(p => p.Id).ToHashSet();
-                if (demoPackIds.Count() != blogPost.DemoPacks.Count())
+                var demoPackUniqueIds = blogPost.DemoPacks.Select(p => p.Id).ToHashSet();
+                if (demoPackUniqueIds.Count() != blogPost.DemoPacks.Count())
                 {
                     response.Message = "Can't use duplicated packs in Demo Packs";
                     return response;
@@ -119,7 +121,7 @@ public class BlogPostService(
 
                 var packsDictionary = packs.ToDictionary(p => p.Id);
 
-                var linkedPacks = linkedPacksIds.Where(lp => packsDictionary.ContainsKey(lp))
+                var linkedPacks = linkedPacksUniqueIds.Where(lp => packsDictionary.ContainsKey(lp))
                     .Select(lp => packsDictionary[lp])
                     .ToList();
 
@@ -131,7 +133,7 @@ public class BlogPostService(
 
                 blogPost.LinkedPacks = linkedPacks.ToList();
             
-                var demoPacks = demoPackIds.Where(dp => packsDictionary.ContainsKey(dp))
+                var demoPacks = demoPackUniqueIds.Where(dp => packsDictionary.ContainsKey(dp))
                     .Select(dp => packsDictionary[dp])
                     .ToList();
 
