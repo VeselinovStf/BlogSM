@@ -25,7 +25,8 @@ namespace BlogSM.API.Controllers
             // USECASE - GET PRODUCT
             var blogPost = await _blogPostService.Get(blogPostId);
 
-            if(!blogPost.Success){
+            if (!blogPost.Success)
+            {
                 return NotFound(new { blogPost.Message });
             }
 
@@ -64,10 +65,60 @@ namespace BlogSM.API.Controllers
                 });
         }
 
-        // TODO: Update/Put
+        [HttpPut("{blogPostId:guid}")]
+        public async Task<IActionResult> Update(Guid blogPostId, [FromBody] UpdateBlogPostDTO updateBlogPostDTO)
+        {
+            if (blogPostId != updateBlogPostDTO.Id)
+            {
+                return BadRequest(new { message = "Blog Post Id mismatch" });
+            }
 
-        // TODO: Delete
-        
+            // USECASE - CREATE PRODUCT
+            var updatedBlogPost = await _blogPostService.Update(updateBlogPostDTO);
+
+            // TODO: Messages are hardcoded for now!!
+            if (updatedBlogPost.Message == "Blog post not found")
+            {
+                return NotFound(new { message = updatedBlogPost.Message });
+            }
+
+            if (!updatedBlogPost.Success)
+            {
+                return BadRequest(new { message = updatedBlogPost.Message });
+            }
+
+            // MAP TO EXTERNAL REPRESENTATION
+            var createdBlogPostResponseModel = _mapper.Map<BlogPostResponseDTO>(updatedBlogPost.Data);
+
+            // RETURN RESULT
+            return Ok(new
+            {
+                success = updatedBlogPost.Success,
+                message = updatedBlogPost.Message,
+                data = createdBlogPostResponseModel
+            });
+        }
+
+        [HttpDelete("{blogPostId:guid}")]
+        public async Task<IActionResult> Delete(Guid blogPostId)
+        {
+            var deleteBlogPostServiceResponse = await _blogPostService.Delete(blogPostId);
+
+            if (!deleteBlogPostServiceResponse.Success)
+            {
+                // TODO: Messages are hardcoded for now!!
+                if (deleteBlogPostServiceResponse.Message == "Blog post not found")
+                {
+                    return NotFound(new { message = deleteBlogPostServiceResponse.Message });
+                }
+
+                return BadRequest(new { message = deleteBlogPostServiceResponse.Message });
+            }
+
+            return NoContent();
+        }
+
         // TODO: Publish/Unpublish - Contains logic for moving the actual post to the SITE
+        // TODO: Settings - from where comes the settings for publishing ?? for starting out use appsettings?
     }
 }

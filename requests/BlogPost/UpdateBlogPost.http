@@ -1,0 +1,36 @@
+PUT {{host}}/blogpost/{{blogPostId}}
+Content-Type: application/json
+
+{
+  "updateBlogPostDTO" : {
+  "Id": "72d97350-6eea-4c8a-994b-d5f55ad7ebf2",
+  "URLTitle": "mastering-art-of-cinematic-fx-4",  // URLTitle can be updated
+  "Title": "Mastering the Art of Cinematic FX-4",  // Title can be updated
+  "Date": "2025-02-06T06:00:00+03:00",  // Date can be updated
+  "Preview": "blog_post_2025_02_6_preview.webp",  // Preview image update
+  "Image": "blog_post_2025_02_6.webp",  // Image update
+  "Alt": "Mastering the Art of Cinematic FX Updated",  // Alt text update
+  "CategoryIds": [
+    "037E0B45-2F39-4141-9235-0D891813827E",  // Categories to be updated (could be new ones or existing)
+    "F6DF5AA6-6833-4624-8B92-48CA7171295C"
+  ],
+  "AuthorId": "219392DE-4414-4D0E-A93A-F5A1C171F2D4",  // Author ID is typically required if changed
+  "Short": "Mastering the Art of Cinematic FX - Updated Description",  // Short description update
+  "TagIds": [
+    "C651E066-DADB-441E-BEED-930E7096DC37",  // Tags can also be updated
+    "DF007FDB-69E7-4777-A41C-A0147F209465"
+  ],
+  "ViewTitle": true,  // If the ViewTitle field needs to be updated
+  "TopBanner": "cinematic_fx_banner_updated.webp",  // TopBanner update
+  "Discount": 25,  // New discount value
+  "PostTargetId": "BEDE26BE-4E4C-490E-BE68-88E9803BCAEB",  // PostTargetId could be updated (if applicable)
+  "PageTypeId": "81545FF1-CDEA-40AA-8E11-7E3DD771B0ED",  // PageTypeId could be updated (if applicable)
+  "Content": "In the updated world of music production, film scoring, and game sound design, sound effects play a crucial role in shaping the listener’s experience...",  // Content update
+  "LinkedPackIds":[
+    "ACFDC3D5-3D21-4070-A870-92F510FC8E9F"  // LinkedPackIds update
+  ],
+  "DemoPackIds":[
+    "B95764C9-6B00-470A-A842-9F5128BBBA74"  // DemoPackIds update
+  ]
+}
+}

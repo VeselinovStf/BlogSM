@@ -38,6 +38,8 @@ try
               options.SubstituteApiVersionInUrl = true;
           });
 
+        builder.Services.AddSwaggerGen();
+
         // Use NLog as the logging provider
         builder.Logging.ClearProviders();
         builder.Host.UseNLog();
@@ -57,6 +59,12 @@ try
     var app = builder.Build();
     {
         app.MapControllers();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
         app.UseExceptionHandler(appError =>
         {

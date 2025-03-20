@@ -11,7 +11,7 @@ public class BlogPostRepository : Repository<BlogPost>, IBlogPostRepository
     {
     }
 
-    public async Task<BlogPost?> GetPostWithCategoriesAndTagsAsync(Guid id)
+    public async Task<BlogPost?> GetPostWithRelationIdsAsync(Guid id)
     {
         return await _dbSet
             .Where(bp => bp.Id == id)
@@ -40,5 +40,19 @@ public class BlogPostRepository : Repository<BlogPost>, IBlogPostRepository
                 DemoPacks = bp.DemoPacks.Select(dp => new Pack() { Id = dp.Id }).ToList(),
             })
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<BlogPost?> GetPostWithIncludesAsync(Guid id)
+    {
+        return await _dbSet
+           .Where(bp => bp.Id == id)
+           .Include(bp => bp.Categories)
+           .Include(bp => bp.Tags)
+           .Include(bp => bp.LinkedPacks)
+           .Include(bp => bp.DemoPacks)
+           .Include(bp => bp.Author)
+           .Include(bp => bp.PageType)
+           .Include(bp => bp.PostTarget)
+           .FirstOrDefaultAsync();
     }
 }

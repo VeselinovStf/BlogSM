@@ -65,7 +65,7 @@ public class Get_Should
             IsPublished = true
         };
 
-        _blogPostRepoMock.Setup(repo => repo.GetPostWithCategoriesAndTagsAsync(blogPostId))
+        _blogPostRepoMock.Setup(repo => repo.GetPostWithRelationIdsAsync(blogPostId))
                          .ReturnsAsync(blogPost);
 
         // Act
@@ -85,7 +85,7 @@ public class Get_Should
         // Arrange
         var blogPostId = Guid.NewGuid();
 
-        _blogPostRepoMock.Setup(repo => repo.GetPostWithCategoriesAndTagsAsync(blogPostId))
+        _blogPostRepoMock.Setup(repo => repo.GetPostWithRelationIdsAsync(blogPostId))
                          .ReturnsAsync((DomainLayer.BlogPost)null);
 
         // Act
@@ -104,7 +104,7 @@ public class Get_Should
         // Arrange
         var blogPostId = Guid.NewGuid();
 
-        _blogPostRepoMock.Setup(repo => repo.GetPostWithCategoriesAndTagsAsync(blogPostId))
+        _blogPostRepoMock.Setup(repo => repo.GetPostWithRelationIdsAsync(blogPostId))
                          .ThrowsAsync(new Exception("Database error"));
 
         // Act

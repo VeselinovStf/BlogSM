@@ -1,0 +1,2 @@
+DELETE {{host}}/blogpost/{{blogPostId}}
+Accept: application/json

@@ -53,7 +53,7 @@ public class CreateBlogPostRequestDTO
     [Required]
     public bool ViewTitle { get; set; }
     public string? TopBanner { get; set; }
-    public int Discount { get; set; }
+    public int? Discount { get; set; }
 
     [Required]
     public Guid PostTargetId { get; set; }  // Match entity

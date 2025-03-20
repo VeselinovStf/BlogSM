@@ -6,5 +6,7 @@ namespace BlogSM.API.Persistence.Repositories.Abstraction;
 
 public interface IBlogPostRepository : IRepository<BlogPost>
 {
-    Task<BlogPost?> GetPostWithCategoriesAndTagsAsync(Guid id);
+    Task<BlogPost?> GetPostWithRelationIdsAsync(Guid id);
+
+    Task<BlogPost?> GetPostWithIncludesAsync(Guid id);
 }
