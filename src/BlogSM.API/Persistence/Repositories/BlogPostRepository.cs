@@ -1,4 +1,7 @@
+
+
 using BlogSM.API.Domain;
+using BlogSM.API.Persistence.Query;
 using BlogSM.API.Persistence.Repositories.Abstraction;
 
 using Microsoft.EntityFrameworkCore;
@@ -55,4 +58,21 @@ public class BlogPostRepository : Repository<BlogPost>, IBlogPostRepository
            .Include(bp => bp.PostTarget)
            .FirstOrDefaultAsync();
     }
+
+    public async Task<IEnumerable<BlogPost>> GetAllAsync(QueryPipeline<BlogPost> queryPipeline)
+    {
+        var blogPostsQuery = _dbSet
+            .Include(bp => bp.Categories)
+            .Include(bp => bp.Tags)
+            .Include(bp => bp.LinkedPacks)
+            .Include(bp => bp.DemoPacks)
+            .Include(bp => bp.Author)
+            .Include(bp => bp.PageType)
+            .Include(bp => bp.PostTarget)
+            .AsNoTracking()
+            .AsQueryable();
+
+        return await queryPipeline.Apply(blogPostsQuery).ToListAsync();
+    }
 }
+

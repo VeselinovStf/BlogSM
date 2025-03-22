@@ -48,6 +48,9 @@ try
 
         builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
         builder.Services.AddServices(Assembly.GetExecutingAssembly());
+        
+        builder.Services.AddQueryStrategies(Assembly.GetExecutingAssembly());
+        builder.Services.AddQueryStrategyFactories(Assembly.GetExecutingAssembly());
 
         builder.Services.AddDbContext<BlogSMDbContext>(options =>
             options.UseSqlServer(builder.Environment.IsProduction() ? 

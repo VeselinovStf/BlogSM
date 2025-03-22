@@ -8,6 +8,7 @@ using Moq;
 
 using ServiceLayer = BlogSM.API.Services;
 using DomainLayer = BlogSM.API.Domain;
+using BlogSM.API.Persistence.Query.Abstraction;
 
 namespace BlogPost.API.BlogPostService.Tests;
 
@@ -22,7 +23,7 @@ public class Get_Should
     private readonly Mock<IPageTypeRepository> _pageTypeRepoMock;
     private readonly Mock<IPostTargetRepository> _postTargetRepoMock;
     private readonly ServiceLayer.BlogPostService _blogPostService;
-
+    private readonly Mock<ISortingStrategyFactory<DomainLayer.BlogPost>> _sortingStrategyFactoryMock;
     private readonly Mock<ILogger<ServiceLayer.BlogPostService>> _loggerMock;
 
     public Get_Should()
@@ -36,6 +37,7 @@ public class Get_Should
         _packRepoMock = new Mock<IPackRepository>();
         _pageTypeRepoMock = new Mock<IPageTypeRepository>();
         _postTargetRepoMock = new Mock<IPostTargetRepository>();
+        _sortingStrategyFactoryMock = new Mock<ISortingStrategyFactory<DomainLayer.BlogPost>>();
 
         _loggerMock = new Mock<ILogger<ServiceLayer.BlogPostService>>();
 
@@ -49,7 +51,8 @@ public class Get_Should
              _packRepoMock.Object,
              _pageTypeRepoMock.Object,
              _postTargetRepoMock.Object,
-             _loggerMock.Object);
+             _loggerMock.Object,
+             _sortingStrategyFactoryMock.Object);
     }
     // 1. Happy Path Test (Found BlogPost)
     [Fact]

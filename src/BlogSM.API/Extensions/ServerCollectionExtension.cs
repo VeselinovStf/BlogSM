@@ -1,5 +1,10 @@
 using System.Reflection;
 
+using BlogSM.API.Domain;
+using BlogSM.API.Persistence.Query.Abstraction;
+using BlogSM.API.Persistence.Query.Filtering;
+using BlogSM.API.Persistence.Query.Sorting;
+
 namespace BlogSM.API.Extensions;
 
 public static class ServerCollectionExtension
@@ -44,5 +49,34 @@ public static class ServerCollectionExtension
                 services.AddScoped(interfaceType, implementationType);
             }
         }
+    }
+
+    /// <summary>
+    /// Not using reflection so far -
+    /// Adding Query Stategies to service collection
+    /// </summary>
+    /// <param name="services">Collection of service descriptors</param>
+    /// <param name="assembly">Assembly</param>
+    public static void AddQueryStrategies(this IServiceCollection services, Assembly assembly)
+    {
+        services.AddScoped<ISortingStrategy<BlogPost>, SortBlogPostByTitleAscendingSortingStrategy>();
+        services.AddScoped<ISortingStrategy<BlogPost>, SortBlogPostByTitleDescendingSortingStrategy>();
+        services.AddScoped<ISortingStrategy<BlogPost>, SortBlogPostByDateAscendingSortingStrategy>();
+        services.AddScoped<ISortingStrategy<BlogPost>, SortBlogPostByDateDescendingSortingStrategy>();
+
+        services.AddScoped<IFilteringStrategy<BlogPost>, FilterByBlogPostAuthorIdStrategy>();
+        services.AddScoped<IFilteringStrategy<BlogPost>, FilterByBlogPostCategoryIdStrategy>();
+        services.AddScoped<IFilteringStrategy<BlogPost>, FilterByBlogPostTagIdStrategy>();
+    }
+
+    /// <summary>
+    /// Not using reflection so far -
+    /// Adding Query Stategies Factories to service collection
+    /// </summary>
+    /// <param name="services">Collection of service descriptors</param>
+    /// <param name="assembly">Assembly</param>
+    public static void AddQueryStrategyFactories(this IServiceCollection services, Assembly assembly)
+    {
+        services.AddScoped<ISortingStrategyFactory<BlogPost>, BlogPostSortingStrategyFactory>();
     }
 }

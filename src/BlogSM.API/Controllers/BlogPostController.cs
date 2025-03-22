@@ -19,6 +19,40 @@ namespace BlogSM.API.Controllers
         private readonly IMapper _mapper = mapper;
         private readonly IBlogPostService _blogPostService = blogPostService;
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? sortOrder = "desc",
+            [FromQuery] string? search = null,
+            [FromQuery] string? sortBy = null,
+            [FromQuery] Guid? categoryId = null,
+            [FromQuery] Guid? tagId = null,
+            [FromQuery] Guid? authorId = null
+        )
+        {
+            if (page < 1 || pageSize < 1)
+            {
+                return BadRequest(new { message = "Page and PageSize must be greater than 0." });
+            }
+
+            var serviceResponse = await _blogPostService.GetAll(page, pageSize, sortOrder, search, sortBy, categoryId, tagId, authorId);
+
+            if (!serviceResponse.Success)
+            {
+                return BadRequest(new { message = serviceResponse.Message });
+            }
+
+            var blogPostsResponseModel = _mapper.Map<IEnumerable<BlogPostResponseDTO>>(serviceResponse.Data);
+
+            return Ok(new
+            {
+                success = serviceResponse.Success,
+                message = serviceResponse.Message,
+                data = blogPostsResponseModel
+            });
+        }
+
         [HttpGet("{blogPostId:guid}")]
         public async Task<IActionResult> Get(Guid blogPostId)
         {

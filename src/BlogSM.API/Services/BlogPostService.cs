@@ -1,5 +1,11 @@
+
 using BlogSM.API.Domain;
 using BlogSM.API.DTOs.BlogPost;
+using BlogSM.API.Persistence.Query;
+using BlogSM.API.Persistence.Query.Abstraction;
+using BlogSM.API.Persistence.Query.Filtering;
+using BlogSM.API.Persistence.Query.Paging;
+using BlogSM.API.Persistence.Query.Sorting;
 using BlogSM.API.Persistence.Repositories.Abstraction;
 using BlogSM.API.Services.Abstraction;
 using BlogSM.API.Services.Models;
@@ -16,7 +22,8 @@ public class BlogPostService(
     IPackRepository packRepo,
     IPageTypeRepository pageTypeRepo,
     IPostTargetRepository postTargetRepo,
-    ILogger<BlogPostService> logger) : IBlogPostService
+    ILogger<BlogPostService> logger,
+    ISortingStrategyFactory<BlogPost> sortingStrategyFactory) : IBlogPostService
 {
     private readonly IBlogPostRepository _blogPostRepo = blogPostRepo;
     private readonly ICategoryRepository _categoryRepo = categoryRepo;
@@ -27,6 +34,7 @@ public class BlogPostService(
     private readonly IPageTypeRepository _pageTypeRepo = pageTypeRepo;
     private readonly IPostTargetRepository _postTargetRepo = postTargetRepo;
     private readonly ILogger<BlogPostService> _logger = logger;
+    private readonly ISortingStrategyFactory<BlogPost> _sortingStrategyFactory = sortingStrategyFactory;
 
     public async Task<ServiceResponse<BlogPost>> Create(BlogPost blogPost)
     {
@@ -610,6 +618,85 @@ public class BlogPostService(
             response.Data = null;
 
             _logger.LogError($"An error occurred while deleting blog post: {ex.Message} : {(ex.InnerException != null ? ex.InnerException.Message : string.Empty)}");
+        }
+
+        return response;
+    }
+
+    /// <summary>
+    /// NOTE: OPEN !!!
+    /// TODO: search - check use case of Decorator 
+    /// TODO: Return PagedResult or continue the same way? - total pages are unknown
+    /// TODO: Test !!!
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <param name="sortOrder"></param>
+    /// <param name="search"></param>
+    /// <param name="sortBy"></param>
+    /// <param name="categoryId"></param>
+    /// <param name="tagId"></param>
+    /// <param name="authorId"></param>
+    /// <returns></returns>
+    public async Task<ServiceResponse<IEnumerable<BlogPost>>> GetAll(int page, int pageSize, string? sortOrder, string? search, string? sortBy, Guid? categoryId, Guid? tagId, Guid? authorId)
+    {
+        var response = new ServiceResponse<IEnumerable<BlogPost>>(false);
+        var pipeline = new QueryPipeline<BlogPost>();
+
+        try
+        {
+            if (categoryId.HasValue)
+            {
+                pipeline.AddFilter(new FilterByBlogPostCategoryIdStrategy(categoryId.Value));
+            }
+
+            if (tagId.HasValue)
+            {
+                pipeline.AddFilter(new FilterByBlogPostTagIdStrategy(tagId.Value));
+            }
+
+            if (authorId.HasValue)
+            {
+                pipeline.AddFilter(new FilterByBlogPostAuthorIdStrategy(authorId.Value));
+            }
+
+            // TODO: search
+
+            // Convert input to Enum
+            if (!Enum.TryParse(sortBy, true, out SortField sortField))
+            {
+                sortField = SortField.Date; // Default sorting field
+            }
+
+            if (!Enum.TryParse(sortOrder, true, out SortDirection sortDirection))
+            {
+                sortDirection = SortDirection.Descending; // Default sorting order
+            }
+
+            var sortingStrategy = _sortingStrategyFactory.GetSortingStrategy(sortField, sortDirection);
+
+            pipeline.AddSorter(sortingStrategy);
+            pipeline.AddPaging(new PagingStrategy<BlogPost>(page, pageSize));
+
+            var blogPost = await _blogPostRepo.GetAllAsync(pipeline);
+
+            if (blogPost == null)
+            {
+                response.Message = $"Blog posts not found";
+                return response;
+            }
+
+            response.Success = true;
+            response.Message = "Blog posts retrieved successfully.";
+            response.Data = blogPost;
+        }
+        catch (Exception ex)
+        {
+            response.Message = "An error occurred while retrieving the blog posts";
+            response.Success = false;
+            response.Data = null;
+
+            _logger.LogError($"An error occurred while retrieving the blog posts: {ex.Message} : {(ex.InnerException != null ? ex.InnerException.Message : string.Empty)}");
         }
 
         return response;
