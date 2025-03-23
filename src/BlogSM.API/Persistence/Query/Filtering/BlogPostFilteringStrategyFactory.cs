@@ -7,14 +7,9 @@ public class BlogPostFilteringStrategyFactory : IFilteringStrategyFactory<BlogPo
 {
     private readonly Dictionary<FilterType, Func<Guid, IFilteringStrategy<BlogPost>>> _filterMappings;
 
-    public BlogPostFilteringStrategyFactory()
+    public BlogPostFilteringStrategyFactory(Dictionary<FilterType, Func<Guid, IFilteringStrategy<BlogPost>>> filterMappings)
     {
-        _filterMappings = new Dictionary<FilterType, Func<Guid, IFilteringStrategy<BlogPost>>>
-        {
-            { FilterType.CategoryId, categoryId => new FilterByBlogPostCategoryIdStrategy(categoryId) },
-            { FilterType.TagId, tagId => new FilterByBlogPostTagIdStrategy(tagId) },
-            { FilterType.AuthorId, authorId => new FilterByBlogPostAuthorIdStrategy(authorId) }
-        };
+        _filterMappings = filterMappings;
     }
 
     public IFilteringStrategy<BlogPost> GetFilter(FilterType category, Guid value)

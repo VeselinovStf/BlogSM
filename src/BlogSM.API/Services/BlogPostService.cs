@@ -693,8 +693,10 @@ public class BlogPostService(
             if (blogPost == null)
             {
                 response.Message = $"Blog posts not found";
+
                 return response;
             }
+
 
             response.Success = true;
             response.Message = "Blog posts retrieved successfully.";

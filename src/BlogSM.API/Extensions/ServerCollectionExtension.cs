@@ -67,16 +67,49 @@ public static class ServerCollectionExtension
     }
 
     /// <summary>
-    /// Not using reflection so far -
     /// Adding Query Stategies Factories to service collection
     /// </summary>
     /// <param name="services">Collection of service descriptors</param>
     /// <param name="assembly">Assembly</param>
     public static void AddQueryStrategyFactories(this IServiceCollection services, Assembly assembly)
     {
-        services.AddScoped<ISortingStrategyFactory<BlogPost>, BlogPostSortingStrategyFactory>();
-        services.AddScoped<IFilterBySearchFactory<BlogPost, FilterByBlogPostSearchDecorator>, FilterByBlogPostSearchFactory>();
-        services.AddScoped<IFilteringStrategyFactory<BlogPost>, BlogPostFilteringStrategyFactory>();
-        services.AddScoped<IPagingStrategyFactory<BlogPost>, BlogPostPagingStrategyFactory>();
+        services.AddScoped<ISortingStrategyFactory<BlogPost>, BlogPostSortingStrategyFactory>(c =>
+        {
+            return new BlogPostSortingStrategyFactory(new Dictionary<(SortField, SortDirection), ISortingStrategy<BlogPost>>
+            {
+                { (SortField.Title, SortDirection.Ascending) , new SortBlogPostByTitleAscendingSortingStrategy() } ,
+                { (SortField.Title, SortDirection.Descending) , new SortBlogPostByTitleDescendingSortingStrategy() },
+                { (SortField.Date, SortDirection.Ascending) , new SortBlogPostByDateAscendingSortingStrategy() },
+                { (SortField.Date, SortDirection.Descending), new SortBlogPostByDateDescendingSortingStrategy() }
+
+            });
+        });
+
+        services.AddScoped<IFilterBySearchFactory<BlogPost, FilterByBlogPostSearchDecorator>, FilterByBlogPostSearchFactory>(c =>
+        {
+            return new FilterByBlogPostSearchFactory(new List<Func<string, IFilteringStrategy<BlogPost>>>(){
+                search => new FilterByBlogPostTitleStrategy(search),
+                search => new FilterByBlogPostContentStrategy(search)
+            });
+        });
+
+        services.AddScoped<IFilteringStrategyFactory<BlogPost>, BlogPostFilteringStrategyFactory>(c =>
+        {
+            return new BlogPostFilteringStrategyFactory(new Dictionary<FilterType, Func<Guid, IFilteringStrategy<BlogPost>>>
+            {
+                { FilterType.CategoryId, categoryId => new FilterByBlogPostCategoryIdStrategy(categoryId) },
+                { FilterType.TagId, tagId => new FilterByBlogPostTagIdStrategy(tagId) },
+                { FilterType.AuthorId, authorId => new FilterByBlogPostAuthorIdStrategy(authorId) }
+            });
+        });
+
+        services.AddScoped<IPagingStrategyFactory<BlogPost>, BlogPostPagingStrategyFactory>(c =>
+        {
+            return new BlogPostPagingStrategyFactory(new Dictionary<PagingType, Func<int, int, PagingStrategy<BlogPost>>>()
+                {
+                    { PagingType.Default,  (page, pageSize) => new PagingStrategy<BlogPost>(page,pageSize)}
+                }
+            );
+        });
     }
 }

@@ -7,8 +7,14 @@ namespace BlogSM.API.Persistence.Query.Paging;
 
 public class BlogPostPagingStrategyFactory : IPagingStrategyFactory<BlogPost>
 {
-    public IPagingStrategy<BlogPost> GetPager(int page, int pageSize)
+    private readonly IDictionary<PagingType, Func<int, int, PagingStrategy<BlogPost>>> _pagingStrategy;
+
+    public BlogPostPagingStrategyFactory(IDictionary<PagingType, Func<int, int, PagingStrategy<BlogPost>>> pagingStrategy)
     {
-        return new PagingStrategy<BlogPost>(page, pageSize);
+        _pagingStrategy = pagingStrategy;
+    }
+    public IPagingStrategy<BlogPost> GetPager(int page, int pageSize, PagingType pagingType = PagingType.Default)
+    {
+        return _pagingStrategy[pagingType](page, pageSize);
     }
 }
