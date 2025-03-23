@@ -43,6 +43,11 @@ namespace BlogSM.API.Controllers
                 return BadRequest(new { message = serviceResponse.Message });
             }
 
+            if(serviceResponse.Data.Count() == 0)
+            {
+                return NotFound(new { message = "No results found." });
+            }
+
             var blogPostsResponseModel = _mapper.Map<IEnumerable<BlogPostResponseDTO>>(serviceResponse.Data);
 
             return Ok(new
