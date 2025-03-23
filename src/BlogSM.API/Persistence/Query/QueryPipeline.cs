@@ -8,7 +8,7 @@ public class QueryPipeline<T> where T : class
 {
     private readonly List<IFilteringStrategy<T>> _filters = new();
     private readonly List<ISortingStrategy<T>> _sorters = new();
-    private IPagingStrategy<T> _pager;
+    private readonly List<IPagingStrategy<T>> _pagers = new();
 
     public QueryPipeline<T> AddFilter(IFilteringStrategy<T> filter)
     {
@@ -26,7 +26,8 @@ public class QueryPipeline<T> where T : class
 
     public QueryPipeline<T> AddPaging(IPagingStrategy<T> pager)
     {
-        _pager = pager;
+        _pagers.Add(pager);
+
         return this;
     }
 
@@ -34,14 +35,19 @@ public class QueryPipeline<T> where T : class
     {
         foreach (var filter in _filters)
         {
-            filter.Apply(query);
+            query = filter.Apply(query);
         }
 
         foreach (var sorter in _sorters)
         {
-            sorter.Apply(query);
+            query = sorter.Apply(query);
         }
 
-        return _pager != null ? _pager.Apply(query) : query; 
+        foreach (var pager in _pagers)
+        {
+            query = pager.Apply(query);
+        }
+
+        return query; 
     }
 }
