@@ -7,6 +7,7 @@ using ServiceLayer = BlogSM.API.Services;
 using DomainLayer = BlogSM.API.Domain;
 using Microsoft.Extensions.Logging;
 using BlogSM.API.Persistence.Query.Abstraction;
+using BlogSM.API.Persistence.Query.Filtering;
 
 namespace BlogPost.API.BlogPostService.Tests;
 
@@ -23,6 +24,9 @@ public class Create_Should
     private readonly ServiceLayer.BlogPostService _blogPostService;
     private readonly Mock<ISortingStrategyFactory<DomainLayer.BlogPost>> _sortingStrategyFactoryMock;
     private readonly Mock<ILogger<ServiceLayer.BlogPostService>> _loggerMock;
+    private readonly Mock<IFilterBySearchFactory<DomainLayer.BlogPost, FilterByBlogPostSearchDecorator>> _filterByBlogPostSearchFactory;
+    private readonly Mock<IFilteringStrategyFactory<DomainLayer.BlogPost>> _filteringStrategyFactory;
+    private readonly Mock<IPagingStrategyFactory<DomainLayer.BlogPost>> _pagingStrategyFactory;
 
     public Create_Should()
     {
@@ -36,6 +40,9 @@ public class Create_Should
         _pageTypeRepoMock = new Mock<IPageTypeRepository>();
         _postTargetRepoMock = new Mock<IPostTargetRepository>();
         _sortingStrategyFactoryMock = new Mock<ISortingStrategyFactory<DomainLayer.BlogPost>>();
+        _filterByBlogPostSearchFactory = new Mock<IFilterBySearchFactory<DomainLayer.BlogPost, FilterByBlogPostSearchDecorator>>();
+        _filteringStrategyFactory = new Mock<IFilteringStrategyFactory<DomainLayer.BlogPost>>();
+        _pagingStrategyFactory = new Mock<IPagingStrategyFactory<DomainLayer.BlogPost>>();
 
         _loggerMock = new Mock<ILogger<ServiceLayer.BlogPostService>>();
 
@@ -50,7 +57,10 @@ public class Create_Should
              _pageTypeRepoMock.Object,
              _postTargetRepoMock.Object,
              _loggerMock.Object,
-             _sortingStrategyFactoryMock.Object);
+             _sortingStrategyFactoryMock.Object,
+             _filterByBlogPostSearchFactory.Object,
+             _filteringStrategyFactory.Object,
+             _pagingStrategyFactory.Object);
     }
 
     [Fact]

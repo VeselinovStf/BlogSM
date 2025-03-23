@@ -4,7 +4,6 @@ using BlogSM.API.DTOs.BlogPost;
 using BlogSM.API.Persistence.Query;
 using BlogSM.API.Persistence.Query.Abstraction;
 using BlogSM.API.Persistence.Query.Filtering;
-using BlogSM.API.Persistence.Query.Paging;
 using BlogSM.API.Persistence.Query.Sorting;
 using BlogSM.API.Persistence.Repositories.Abstraction;
 using BlogSM.API.Services.Abstraction;
@@ -23,7 +22,10 @@ public class BlogPostService(
     IPageTypeRepository pageTypeRepo,
     IPostTargetRepository postTargetRepo,
     ILogger<BlogPostService> logger,
-    ISortingStrategyFactory<BlogPost> sortingStrategyFactory) : IBlogPostService
+    ISortingStrategyFactory<BlogPost> sortingStrategyFactory,
+    IFilterBySearchFactory<BlogPost, FilterByBlogPostSearchDecorator> filterByBlogPostSearchFactory,
+    IFilteringStrategyFactory<BlogPost> filteringStrategyFactory,
+    IPagingStrategyFactory<BlogPost> pagingStrategyFactory) : IBlogPostService
 {
     private readonly IBlogPostRepository _blogPostRepo = blogPostRepo;
     private readonly ICategoryRepository _categoryRepo = categoryRepo;
@@ -35,6 +37,9 @@ public class BlogPostService(
     private readonly IPostTargetRepository _postTargetRepo = postTargetRepo;
     private readonly ILogger<BlogPostService> _logger = logger;
     private readonly ISortingStrategyFactory<BlogPost> _sortingStrategyFactory = sortingStrategyFactory;
+    private readonly IFilterBySearchFactory<BlogPost, FilterByBlogPostSearchDecorator> _filterByBlogPostSearchFactory = filterByBlogPostSearchFactory;
+    private readonly IFilteringStrategyFactory<BlogPost> _filteringStrategyFactory = filteringStrategyFactory;
+    private readonly IPagingStrategyFactory<BlogPost> _pagingStrategyFactory = pagingStrategyFactory;
 
     public async Task<ServiceResponse<BlogPost>> Create(BlogPost blogPost)
     {
@@ -625,7 +630,6 @@ public class BlogPostService(
 
     /// <summary>
     /// NOTE: OPEN !!!
-    /// TODO: search - check use case of Decorator 
     /// TODO: Return PagedResult or continue the same way? - total pages are unknown
     /// TODO: Test !!!
     /// </summary>
@@ -645,22 +649,27 @@ public class BlogPostService(
 
         try
         {
+            var filteringTermns = new List<string>();
+            
             if (categoryId.HasValue)
             {
-                pipeline.AddFilter(new FilterByBlogPostCategoryIdStrategy(categoryId.Value));
+                pipeline.AddFilter(_filteringStrategyFactory.GetFilter(FilterType.CategoryId, categoryId.Value));
             }
 
             if (tagId.HasValue)
             {
-                pipeline.AddFilter(new FilterByBlogPostTagIdStrategy(tagId.Value));
+                pipeline.AddFilter(_filteringStrategyFactory.GetFilter(FilterType.TagId, tagId.Value));
             }
 
             if (authorId.HasValue)
             {
-                pipeline.AddFilter(new FilterByBlogPostAuthorIdStrategy(authorId.Value));
+                pipeline.AddFilter(_filteringStrategyFactory.GetFilter(FilterType.AuthorId, authorId.Value));
             }
 
-            // TODO: search
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                pipeline.AddFilter(_filterByBlogPostSearchFactory.Create(search));
+            }
 
             // Convert input to Enum
             if (!Enum.TryParse(sortBy, true, out SortField sortField))
@@ -676,7 +685,8 @@ public class BlogPostService(
             var sortingStrategy = _sortingStrategyFactory.GetSortingStrategy(sortField, sortDirection);
 
             pipeline.AddSorter(sortingStrategy);
-            pipeline.AddPaging(new PagingStrategy<BlogPost>(page, pageSize));
+
+            pipeline.AddPaging(_pagingStrategyFactory.GetPager(page, pageSize));
 
             var blogPost = await _blogPostRepo.GetAllAsync(pipeline);
 

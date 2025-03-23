@@ -3,6 +3,7 @@ using System.Reflection;
 using BlogSM.API.Domain;
 using BlogSM.API.Persistence.Query.Abstraction;
 using BlogSM.API.Persistence.Query.Filtering;
+using BlogSM.API.Persistence.Query.Paging;
 using BlogSM.API.Persistence.Query.Sorting;
 
 namespace BlogSM.API.Extensions;
@@ -63,10 +64,6 @@ public static class ServerCollectionExtension
         services.AddScoped<ISortingStrategy<BlogPost>, SortBlogPostByTitleDescendingSortingStrategy>();
         services.AddScoped<ISortingStrategy<BlogPost>, SortBlogPostByDateAscendingSortingStrategy>();
         services.AddScoped<ISortingStrategy<BlogPost>, SortBlogPostByDateDescendingSortingStrategy>();
-
-        services.AddScoped<IFilteringStrategy<BlogPost>, FilterByBlogPostAuthorIdStrategy>();
-        services.AddScoped<IFilteringStrategy<BlogPost>, FilterByBlogPostCategoryIdStrategy>();
-        services.AddScoped<IFilteringStrategy<BlogPost>, FilterByBlogPostTagIdStrategy>();
     }
 
     /// <summary>
@@ -78,5 +75,8 @@ public static class ServerCollectionExtension
     public static void AddQueryStrategyFactories(this IServiceCollection services, Assembly assembly)
     {
         services.AddScoped<ISortingStrategyFactory<BlogPost>, BlogPostSortingStrategyFactory>();
+        services.AddScoped<IFilterBySearchFactory<BlogPost, FilterByBlogPostSearchDecorator>, FilterByBlogPostSearchFactory>();
+        services.AddScoped<IFilteringStrategyFactory<BlogPost>, BlogPostFilteringStrategyFactory>();
+        services.AddScoped<IPagingStrategyFactory<BlogPost>, BlogPostPagingStrategyFactory>();
     }
 }
