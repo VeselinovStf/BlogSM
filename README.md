@@ -46,10 +46,17 @@ BlogSM is a multi-functional system that combines the management of a blog and a
     dotnet build
 
 3. Setup DB:
-   - docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=!Aa12345678" -p 1433:1433 --name sql1 --hostname sql1  -d mcr.microsoft.com/mssql/server:2022-latest
+   - docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=<PASSWORD>" -p 1433:1433 --name sql1 --hostname sql1  -d mcr.microsoft.com/mssql/server:2022-latest
    - **NOTE: When app is run in Production set env variable BlogSmAPIConnectionString that must hold the db connection string, change this for db container props to!!!**
-   
-4. Run the application:
+
+4. Setup .env file
+    - Create .env file, currently used for both dev and prod env's
+```
+DevDbConnectionString=Server=localhost;Database=BlogSMDevDb;User Id=sa;Password=<PASSWORD>;TrustServerCertificate=True
+ProdDbConnectionString=Server=localhost;Database=BlogSMProdDb;User Id=sa;Password=<PASSWORD>;TrustServerCertificate=True
+```
+
+6. Run the application:
    ```bash
    dotnet run --project BlogSM.API
 

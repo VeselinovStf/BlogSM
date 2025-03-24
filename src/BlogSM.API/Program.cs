@@ -8,6 +8,8 @@ using Asp.Versioning;
 using BlogSM.API.Extensions;
 using BlogSM.API.Persistence;
 
+using DotNetEnv;
+
 using Microsoft.EntityFrameworkCore;
 
 using NLog;
@@ -18,6 +20,8 @@ var logger = NLog.LogManager.Setup().LoadConfigurationFromFile("nlog.config").Ge
 try
 {
     logger.Info("BlogSM.API Starting...");
+
+    Env.Load();
 
     var builder = WebApplication.CreateBuilder(args);
     {
@@ -54,7 +58,7 @@ try
 
         builder.Services.AddDbContext<BlogSMDbContext>(options =>
             options.UseSqlServer(builder.Environment.IsProduction() ? 
-                Environment.GetEnvironmentVariable("BlogSmAPIConnectionString") : builder.Configuration.GetConnectionString("DefaultConnection"))
+                Environment.GetEnvironmentVariable("ProdDbConnectionString") : Environment.GetEnvironmentVariable("DevDbConnectionString"))
             .UseSeeding(BlogSMDbSeed.SeedInitialData));
     }
 
